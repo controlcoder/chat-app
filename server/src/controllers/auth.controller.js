@@ -57,7 +57,10 @@ export const userLogin = async (req, res, next) => {
 
     const user = await userModel
       .findOne({ email })
-      .select("email name password");
+      .select("email name password")
+      .populate("friends", "name email profilePic -_id")
+      .populate("friendRequestsSent", "name email profilePic -_id")
+      .populate("friendRequestsReceived", "name email profilePic -_id");
     if (!user)
       return res.status(401).json({
         success: false,

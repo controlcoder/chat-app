@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser"
 import { Server } from "socket.io";
 import authRouter from "./routes/auth.routes.js";
 import messageRouter from "./routes/message.routes.js";
+import friendRouter from "./routes/friend.routes.js";
 
 const app = express();
 
@@ -50,6 +51,7 @@ app.use("/api/status", (req, res) => {
 });
 app.use("/api/auth", authRouter);
 app.use("/api/messages", messageRouter);
+app.use("/api/friends", friendRouter);
 
 app.use((err, req, res, next) => {
   console.log(500, err);

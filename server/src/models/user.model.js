@@ -28,6 +28,34 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
+    friends: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
+        },
+      ],
+      default: [],
+    },
+    friendRequestsSent: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
+        },
+      ],
+      default: [],
+    },
+    friendRequestsReceived: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true },
 );

@@ -3,6 +3,7 @@ import assets from "../assets/assets";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
+import { FriendContext } from "../context/FriendContext";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -10,12 +11,11 @@ export default function Sidebar() {
   const [input, setInput] = useState("");
 
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
-
   const [showRequestsModal, setShowRequestsModal] = useState(false);
 
   const { logout, onlineUsers } = useContext(AuthContext);
 
-  const [friendRequests, setFriendRequests] = useState([]);
+  const [newFriendInput, setNewFriendInput] = useState("");
 
   const {
     getUsersList,
@@ -25,6 +25,8 @@ export default function Sidebar() {
     unseenMessages,
     setUnseenMessages,
   } = useContext(ChatContext);
+
+  const { sendFriendRequest, friendRequests } = useContext(FriendContext);
 
   const filteredUsers = input
     ? users.filter(
@@ -59,7 +61,7 @@ export default function Sidebar() {
                 alt="menu_icon"
                 className="max-h-5 cursor-pointer"
               />
-              <div className="absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block">
+              <div className="absolute top-[80%] right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block">
                 <p
                   onClick={() => setShowAddFriendModal(true)}
                   className="cursor-pointer text-sm"
@@ -111,6 +113,9 @@ export default function Sidebar() {
             <input
               type="text"
               placeholder="Enter email"
+              value={newFriendInput}
+              onChange={(e) => setNewFriendInput(e.target.value)}
+              required={true}
               className="w-full p-2 rounded bg-[#1f1a36] outline-none text-sm"
             />
 
@@ -118,8 +123,11 @@ export default function Sidebar() {
             <button
               className="mt-4 w-full bg-violet-600 py-2 rounded text-sm"
               onClick={() => {
-                // later connect API here
-                console.log("Send friend request");
+                if (newFriendInput && newFriendInput.trim()) {
+                  sendFriendRequest(newFriendInput);
+                  setNewFriendInput("");
+                  setShowAddFriendModal(false);
+                }
               }}
             >
               Send Request
@@ -147,7 +155,7 @@ export default function Sidebar() {
               <div className="flex flex-col gap-3">
                 {friendRequests.map((user) => (
                   <div
-                    key={user._id}
+                    key={user.email}
                     className="flex items-center justify-between bg-[#1f1a36] p-3 rounded"
                   >
                     <div className="flex items-center gap-2">
@@ -160,17 +168,17 @@ export default function Sidebar() {
 
                     <div className="flex gap-2">
                       <button
-                      onClick={() => acceptFriendRequest(user._id)}
-                      className="text-[12px] cursor-pointer px-3 py-1 bg-green-600 rounded"
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={() => acceptFriendRequest(user._id)}
-                      className="text-[12px] cursor-pointer px-3 py-1 bg-red-600 rounded"
-                    >
-                      Reject
-                    </button>
+                        onClick={() => acceptFriendRequest(user._id)}
+                        className="text-[12px] cursor-pointer px-3 py-1 bg-green-600 rounded"
+                      >
+                        Accept
+                      </button>
+                      <button
+                        onClick={() => rejectFriendRequest(user._id)}
+                        className="text-[12px] cursor-pointer px-3 py-1 bg-red-600 rounded"
+                      >
+                        Reject
+                      </button>
                     </div>
                   </div>
                 ))}
