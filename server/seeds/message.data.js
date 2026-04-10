@@ -1,0 +1,51 @@
+export const messagesDummyData = [
+  {
+    _id: "680f571ff10f3cd28382f094",
+    senderId: "680f5116f10f3cd28382ed02",
+    receiverId: "680f50e4f10f3cd28382ecf9",
+    text: "sender",
+    seen: true,
+  },
+  {
+    _id: "680f5726f10f3cd28382f0b1",
+    senderId: "680f50e4f10f3cd28382ecf9",
+    receiverId: "680f5116f10f3cd28382ed02",
+    text: "adipiscing elit. dolor sit amet, consectetur",
+    seen: true,
+  },
+  {
+    _id: "680f5729f10f3cd28382f0b6",
+    senderId: "680f5116f10f3cd28382ed02",
+    receiverId: "680f50e4f10f3cd28382ecf9",
+    text: "amet, consectetur adipiscing elit.",
+    seen: true,
+  },
+  {
+    _id: "680f572cf10f3cd28382f0bb",
+    senderId: "680f50e4f10f3cd28382ecf9",
+    receiverId: "680f5116f10f3cd28382ed02",
+    text: "ipsum dolor sit amet, consectetur adipiscing elit.",
+    seen: true,
+  },
+  {
+    _id: "680f573cf10f3cd28382f0c0",
+    senderId: "680f50e4f10f3cd28382ecf9",
+    receiverId: "680f5116f10f3cd28382ed02",
+    text: "consectetur adipiscing elit.",
+    seen: true,
+  },
+  {
+    _id: "680f5745f10f3cd28382f0c5",
+    senderId: "680f5116f10f3cd28382ed02",
+    receiverId: "680f50e4f10f3cd28382ecf9",
+    text: "dolor sit amet, consectetur",
+    seen: true,
+  },
+  {
+    _id: "680f5748f10f3cd28382f0ca",
+    senderId: "680f5116f10f3cd28382ed02",
+    receiverId: "680f50e4f10f3cd28382ecf9",
+    text: "ipsum dolor sit adipiscing elit.",
+    seen: true,
+  },
+];
