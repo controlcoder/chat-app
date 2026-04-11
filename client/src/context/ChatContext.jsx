@@ -19,6 +19,7 @@ export const ChatProvider = ({ children }) => {
       const { data } = await api.get("/api/messages/users");
       if (data.success) {
         setUsers(data.users);
+        setUnseenMessages(data.unseenMessages);
       }
     } catch (err) {}
   };
@@ -77,16 +78,15 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
     if (authUser) {
       subscribeToMessages();
-      getUsersList();
     }
     return () => unsubscribeFromMessages();
   }, [socket, selectedUser]);
 
   const value = {
-    messages,
     users,
-    selectedUser,
     getUsersList,
+    messages,
+    selectedUser,
     setMessages,
     sendMessage,
     setSelectedUser,

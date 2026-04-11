@@ -5,14 +5,33 @@ import userModel from "../models/user.model.js";
 export const getUsersForSidebar = async (req, res, next) => {
   try {
     const user = req.user;
-    const users = await userModel
-      .find({ _id: { $ne: user._id } })
+    // const filteredUsers = await userModel
+    //   .find({ _id: { $ne: user._id } })
+    //   .select("-__v");
+
+    const filteredUsers = await userModel
+      .findById(user._id)
+      .populate("friends")
       .select("-__v");
+
+    const unseenMessages = {};
+
+    const promises = filteredUsers?.friends.map(async (sideUser) => {
+      const messages = await messageModel.find({
+        senderId: sideUser._id,
+        receiverId: user._id,
+        seen: false,
+      });
+      if (messages.length > 0) unseenMessages[sideUser._id] = messages.length;
+    });
+
+    await Promise.all(promises);
 
     return res.json({
       success: true,
       message: "all users retrieved",
-      users,
+      users: filteredUsers?.friends,
+      unseenMessages,
     });
   } catch (err) {
     next(err);

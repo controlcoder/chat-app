@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
 
   const connectSocket = (userData) => {
     const newSocket = io(API_URL, {
-      auth: { userId: userData.userId },
+      auth: { userId: userData._id },
     });
     newSocket.connect();
     setSocket(newSocket);

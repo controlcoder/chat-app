@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import assets from "../assets/assets";
 import { useContext, useEffect, useState } from "react";
+import assets from "../assets/assets";
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import { FriendContext } from "../context/FriendContext";
@@ -18,15 +18,21 @@ export default function Sidebar() {
   const [newFriendInput, setNewFriendInput] = useState("");
 
   const {
-    getUsersList,
     users,
+    getUsersList,
     selectedUser,
     setSelectedUser,
     unseenMessages,
     setUnseenMessages,
   } = useContext(ChatContext);
 
-  const { sendFriendRequest, friendRequests } = useContext(FriendContext);
+  const {
+    sendFriendRequest,
+    friendRequests,
+    acceptFriendRequest,
+    rejectFriendRequest,
+    // friends,
+  } = useContext(FriendContext);
 
   const filteredUsers = input
     ? users.filter(
@@ -121,7 +127,7 @@ export default function Sidebar() {
 
             {/* Action button */}
             <button
-              className="mt-4 w-full bg-violet-600 py-2 rounded text-sm"
+              className="mt-4 w-full bg-violet-600 py-2 rounded text-sm cursor-pointer"
               onClick={() => {
                 if (newFriendInput && newFriendInput.trim()) {
                   sendFriendRequest(newFriendInput);
@@ -153,35 +159,43 @@ export default function Sidebar() {
               <p className="text-sm text-gray-400">No requests</p>
             ) : (
               <div className="flex flex-col gap-3">
-                {friendRequests.map((user) => (
-                  <div
-                    key={user.email}
-                    className="flex items-center justify-between bg-[#1f1a36] p-3 rounded"
-                  >
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={user.profilePic || assets.avatar_icon}
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <p className="text-sm">{user.name}</p>
-                    </div>
+                {friendRequests.map((user) => {
+                  return (
+                    <div
+                      key={user.email}
+                      className="flex items-center justify-between bg-[#1f1a36] p-3 rounded"
+                    >
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={user.profilePic || assets.avatar_icon}
+                          className="w-8 h-8 rounded-full"
+                        />
+                        <p className="text-sm">{user.name}</p>
+                      </div>
 
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => acceptFriendRequest(user._id)}
-                        className="text-[12px] cursor-pointer px-3 py-1 bg-green-600 rounded"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        onClick={() => rejectFriendRequest(user._id)}
-                        className="text-[12px] cursor-pointer px-3 py-1 bg-red-600 rounded"
-                      >
-                        Reject
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            acceptFriendRequest(user._id);
+                            setShowRequestsModal(false);
+                          }}
+                          className="text-[12px] cursor-pointer px-3 py-1 bg-green-600 rounded"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() => {
+                            rejectFriendRequest(user._id);
+                            setShowRequestsModal(false);
+                          }}
+                          className="text-[12px] cursor-pointer px-3 py-1 bg-red-600 rounded"
+                        >
+                          Reject
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -189,37 +203,47 @@ export default function Sidebar() {
       )}
 
       <div className="flex flex-col">
-        {filteredUsers.map((user) => {
-          return (
-            <div
-              onClick={() => {
-                setSelectedUser(user?._id === selectedUser?._id ? null : user);
-                setUnseenMessages((prev) => ({ ...prev, [user._id]: 0 }));
-              }}
-              key={user._id}
-              className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${selectedUser?._id === user._id && "bg-[#282142]/50"}`}
-            >
-              <img
-                src={user?.profilePic || assets.avatar_icon}
-                alt="profile_pic"
-                className="w-8.75 aspect-square rounded-full"
-              />
-              <div className="flex flex-col leading-5 text-[14px]">
-                <p>{user.name}</p>
-                {onlineUsers.includes(user._id) ? (
-                  <span className="text-green-400 text-[10px]">Online</span>
-                ) : (
-                  <span className="text-neutral-400 text-[10px]">Offline</span>
+        {filteredUsers && filteredUsers.length === 0 ? (
+          <p className="text-center mt-4">
+            You don't have any friend, add a friend to chat
+          </p>
+        ) : (
+          filteredUsers.map((user) => {
+            return (
+              <div
+                onClick={() => {
+                  setSelectedUser(
+                    user?._id === selectedUser?._id ? null : user,
+                  );
+                  setUnseenMessages((prev) => ({ ...prev, [user._id]: 0 }));
+                }}
+                key={user._id}
+                className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${selectedUser?._id === user._id && "bg-[#282142]/50"}`}
+              >
+                <img
+                  src={user?.profilePic || assets.avatar_icon}
+                  alt="profile_pic"
+                  className="w-8.75 aspect-square rounded-full"
+                />
+                <div className="flex flex-col leading-5 text-[14px]">
+                  <p>{user.name}</p>
+                  {onlineUsers.includes(user._id) ? (
+                    <span className="text-green-400 text-[10px]">Online</span>
+                  ) : (
+                    <span className="text-neutral-400 text-[10px]">
+                      Offline
+                    </span>
+                  )}
+                </div>
+                {unseenMessages[user._id] > 0 && (
+                  <p className="absolute top-4 right-2 text-[10px] h-4 w-4 flex justify-center items-center rounded-full bg-violet-500/50">
+                    {unseenMessages[user._id]}
+                  </p>
                 )}
               </div>
-              {unseenMessages[user._id] > 0 && (
-                <p className="absolute top-4 right-2 text-[10px] h-4 w-4 flex justify-center items-center rounded-full bg-violet-500/50">
-                  {unseenMessages[user._id]}
-                </p>
-              )}
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </div>
   );
