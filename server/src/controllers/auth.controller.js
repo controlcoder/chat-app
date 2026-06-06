@@ -34,7 +34,11 @@ export const userRegister = async (req, res, next) => {
       expiresIn: "1d",
     });
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
 
     return res.status(201).json({
       success: true,
@@ -81,7 +85,11 @@ export const userLogin = async (req, res, next) => {
       expiresIn: "1d",
     });
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
 
     return res.json({
       success: true,

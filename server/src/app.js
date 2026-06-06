@@ -29,7 +29,7 @@ export const io = new Server(server, {
 io.on("connection", async (socket) => {
   const userId = socket.handshake.auth.userId;
   userSocketMap[userId] = socket.id;
-  console.log("user connected");
+  // console.log("user connected");
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
   // console.log(1, userSocketMap);
@@ -39,7 +39,7 @@ io.on("connection", async (socket) => {
   // });
 
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    // console.log("user disconnected");
     delete userSocketMap[userId];
     // console.log(2, userSocketMap);
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
