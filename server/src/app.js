@@ -1,7 +1,7 @@
 import express from "express";
 import http from "http";
 import cors from "cors";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
 import authRouter from "./routes/auth.routes.js";
 import messageRouter from "./routes/message.routes.js";
@@ -11,11 +11,11 @@ const app = express();
 
 const server = http.createServer(app);
 
-app.use(express.json({limit: "10mb"}));
-app.use(cookieParser())
+app.use(express.json({ limit: "10mb" }));
+app.use(cookieParser());
 app.use(
   cors({
-    origin:"http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   }),
 );
